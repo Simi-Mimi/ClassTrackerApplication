@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*") // הגדרה מדויקת למקור (CORS)
 public class TripController {
     @Autowired
     private StudentRepository studentRepo;
@@ -42,14 +42,45 @@ public class TripController {
             Teacher existingTeacher = teacherRepo.findById(teacher.getId()).get();
             return ResponseEntity.status(HttpStatus.CONFLICT).body("המורה כבר קיימת במערכת: " + existingTeacher.getFirstName());
         }
-        Student savedStudent = teacherRepo.save(teacher);
-        return ResponseEntity.ok(savedStudent);
+        Teacher savedTeacher = teacherRepo.save(teacher);
+        return ResponseEntity.ok(savedTeacher);
     }
 
-    // שליפת כל התלמידות בכיתה ספציפית
-    @GetMapping("/students/class/{className}")
-    public List<Student> getStudentsByClass(@PathVariable String className) {
-        return studentRepo.findByClassroom(className);
+    // שליפת תלמידה לפי ת.ז.
+    @GetMapping("/student")
+    public ResponseEntity<Student> getStudentById(@RequestHeader("Student-ID") String id) {
+        return studentRepo.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // שליפת מורה לפי ת.ז.
+    @GetMapping("/teacher")
+    public ResponseEntity<Teacher> getTeacherById(@RequestHeader("Teacher-ID") String id) {
+        return teacherRepo.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+//   שליפת כל התלמידות בכיתה ספציפית
+   @GetMapping("/students/class")
+   //@RequestHeader("Teacher-ID")
+   public ResponseEntity<?> getStudentsByTeacher(@RequestHeader("Teacher-ID") String teacherId) {
+       Optional<Teacher> teacherOpt = teacherRepo.findById(teacherId);
+       if(teacherOpt.isPresent()){
+           String classroom = teacherOpt.get().getClassroom();
+           List<Student> students = studentRepo.findByClassroom(classroom);
+           return ResponseEntity.ok(students);
+       }else{
+           return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                   .body("גישה נדחתה: מזהה זה אינו רשום כמורה במערכת");
+       }
+   }
+
+    // שליפת כל המורות
+    @GetMapping("/teachers")
+    public List<Teacher> getStudentsByClass() {
+        return teacherRepo.findAll();
     }
 }
 

@@ -4,6 +4,8 @@ package com.smartclasstracker.smartclasstracker.repository;
 import com.smartclasstracker.smartclasstracker.models.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TeacherRepository extends JpaRepository<Teacher, String> {
+import java.util.Optional;
 
+public interface TeacherRepository extends JpaRepository<Teacher, String> {
+    Optional<Teacher> findById(String id);
 }
