@@ -82,5 +82,6 @@ public class TripController {
     public List<Teacher> getStudentsByClass() {
         return teacherRepo.findAll();
     }
+    //קליטת מיקומים
 }
 
