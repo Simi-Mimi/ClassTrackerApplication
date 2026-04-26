@@ -6,6 +6,7 @@ import { Home } from '../src/pages/Home';
 import { SignUpTeacher } from '../src/pages/SignUpTeacher';
 import { SignInTeacher } from '../src/pages/SignInTeacher';
 import { PersonalArea } from '../src/pages/PersonalArea';
+import NavBar from '../src/components/NavBar';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -13,7 +14,9 @@ function App() {
 
   return (
     <>
-      <h1>App</h1>
+     
+      <NavBar />  
+       <br></br>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup-student" element={<SignUpStudent />} />
