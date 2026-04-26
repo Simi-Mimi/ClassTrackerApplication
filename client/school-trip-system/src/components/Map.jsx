@@ -7,7 +7,7 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 
 export const Map = ({ studentsLocations }) => {
-
+    console.log(studentsLocations)
     //הגדרת אייקון
     let DefaultIcon = L.icon({
         iconUrl: icon,
@@ -45,9 +45,10 @@ export const Map = ({ studentsLocations }) => {
                     />
                     <MapBoundsUpdater locations={studentsLocations} />
                     {studentsLocations?.map((loc) => (
-                        <Marker key={loc.id} position={[loc.latitude, loc.longitude]}>
+                        <Marker key={`${loc.firstName}-${loc.id}-${loc.time}`} position={[loc.latitude, loc.longitude]}>
                             <Popup>
-                                {loc.id} <br />
+                                שם:{loc.firstName} <br />
+                                תז: {loc.id} <br />
                                 {new Date(loc.time).toLocaleString()}
                             </Popup>
                         </Marker>
