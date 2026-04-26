@@ -1,10 +1,14 @@
 package com.smartclasstracker.smartclasstracker.controller;
 
+import com.smartclasstracker.smartclasstracker.DTO.StudentLocationDTO;
 import com.smartclasstracker.smartclasstracker.models.Student;
+import com.smartclasstracker.smartclasstracker.models.StudentLocation;
 import com.smartclasstracker.smartclasstracker.models.Teacher;
+import com.smartclasstracker.smartclasstracker.repository.StudentLocationRepository;
 import com.smartclasstracker.smartclasstracker.repository.StudentRepository;
 
 import com.smartclasstracker.smartclasstracker.repository.TeacherRepository;
+import com.smartclasstracker.smartclasstracker.service.StudentLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -23,6 +28,8 @@ public class TripController {
     @Autowired
     private TeacherRepository teacherRepo;
 
+    @Autowired
+    private StudentLocationRepository studentLocationRepository;
     //חלק א'
     //הוספת תלמידה
     @PostMapping("/addStudent")
@@ -82,6 +89,38 @@ public class TripController {
     public List<Teacher> getStudentsByClass() {
         return teacherRepo.findAll();
     }
-    //קליטת מיקומים
+
+    @Autowired
+    private StudentLocationService service;
+
+    //עדכון מיקום תלמיד ממכשיר האיכון
+    @PostMapping("/updateLocationStu")
+    public ResponseEntity <String>  updateLocationStu(@RequestBody StudentLocationDTO dto){
+        try {
+            service.processLocation(dto);
+            return ResponseEntity.ok("המיקום עודכן ב-DB");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("שגיאה בעדכון המיקום: " + e.getMessage());
+        }
+    }
+    //שליפת מיקומים של תלמידים לפי כיתה עבור המפה
+    @GetMapping("/allLocation")
+    public  ResponseEntity<List<StudentLocation>> getAllLocations(@RequestHeader("Teacher-ID") String teacherId){
+
+        Teacher teacher = teacherRepo.findById(teacherId)
+                .orElseThrow(() -> new RuntimeException(teacherId + "לא מצאנו מורה עם ת.ז."));
+        String classroom = teacher.getClassroom();
+        List<Student> students = studentRepo.findByClassroom(classroom);
+
+        List<String> studentIds = students.stream()
+                .map(Student::getId)
+                .collect(Collectors.toList());
+
+        List<StudentLocation> locations = studentLocationRepository.findByIdIn(studentIds);
+
+        return ResponseEntity.ok(locations);
+    }
+
+
 }
 

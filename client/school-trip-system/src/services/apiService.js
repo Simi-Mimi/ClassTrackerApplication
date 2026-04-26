@@ -20,7 +20,7 @@ export const registerUser = async (userData, type) => {
 };
 //בדיקה האם זה מורה
 export const IsTeacher = async (IdData) => {
-    const teacherId = IdData.id; 
+    const teacherId = IdData.id;
     const response = await fetch(`${API_URL}/teacher`, {
         method: 'GET',
         headers: {
@@ -36,9 +36,9 @@ export const IsTeacher = async (IdData) => {
     }
 };
 
-//רשימת התלמדות
+//רשימת התלמידים
 export const ListStudent = async (IdData) => {
-    console.log("IdData ListStudentListStudent",IdData)
+    console.log("IdData ListStudentListStudent", IdData)
     const response = await fetch(`${API_URL}/students/class`, {
         method: 'GET',
         headers: {
@@ -49,9 +49,27 @@ export const ListStudent = async (IdData) => {
     if (response.ok) {
         const data = await response.json();
         console.log(data)
-        return await data;
+        return data;
     } else {
         alert("הנתון אינו תקין או שאינו במערכת")
         return null;
     }
 };
+//רשימת מיקומי התלמידים
+export const LocationStudents = async (IdData) => {
+    const response = await fetch(`${API_URL}/allLocation`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Teacher-ID': IdData
+        }
+    });
+    if (response.ok) {
+        const data = await response.json();
+        console.log(data)
+        return data;
+    } else {
+        alert("הנתון אינו תקין או שאינו במערכת")
+        return null;
+    }
+}

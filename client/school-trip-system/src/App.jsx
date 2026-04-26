@@ -5,7 +5,7 @@ import { SignUpStudent } from '../src/pages/SignUpStudent';
 import { Home } from '../src/pages/Home';
 import { SignUpTeacher } from '../src/pages/SignUpTeacher';
 import { SignInTeacher } from '../src/pages/SignInTeacher';
-import { PersonalArea } from './components/PersonalArea';
+import { PersonalArea } from '../src/pages/PersonalArea';
 
 function App() {
   const [count, setCount] = useState(0)
