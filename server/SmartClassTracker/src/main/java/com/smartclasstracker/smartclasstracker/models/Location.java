@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter//lombok
 @Setter//lombok
-public class StudentLocation {
+public class Location {
     @Id
     private String id;
 

@@ -1,14 +1,13 @@
 package com.smartclasstracker.smartclasstracker.controller;
 
-import com.smartclasstracker.smartclasstracker.DTO.StudentLocationDTO;
+import com.smartclasstracker.smartclasstracker.DTO.LocationDTO;
 import com.smartclasstracker.smartclasstracker.models.Student;
-import com.smartclasstracker.smartclasstracker.models.StudentLocation;
+import com.smartclasstracker.smartclasstracker.models.Location;
 import com.smartclasstracker.smartclasstracker.models.Teacher;
-import com.smartclasstracker.smartclasstracker.repository.StudentLocationRepository;
+import com.smartclasstracker.smartclasstracker.repository.LocationRepository;
 import com.smartclasstracker.smartclasstracker.repository.StudentRepository;
-
 import com.smartclasstracker.smartclasstracker.repository.TeacherRepository;
-import com.smartclasstracker.smartclasstracker.service.StudentLocationService;
+import com.smartclasstracker.smartclasstracker.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,7 @@ public class TripController {
     private TeacherRepository teacherRepo;
 
     @Autowired
-    private StudentLocationRepository studentLocationRepository;
+    private LocationRepository locationRepository;
     //חלק א'
     //הוספת תלמידה
     @PostMapping("/addStudent")
@@ -91,11 +90,11 @@ public class TripController {
     }
 
     @Autowired
-    private StudentLocationService service;
+    private LocationService service;
 
-    //עדכון מיקום תלמיד ממכשיר האיכון
-    @PostMapping("/updateLocationStu")
-    public ResponseEntity <String>  updateLocationStu(@RequestBody StudentLocationDTO dto){
+    //עדכון מיקום ממכשיר האיכון
+    @PostMapping("/updateLocation")
+    public ResponseEntity <String>  updateLocation(@RequestBody LocationDTO dto){
         try {
             service.processLocation(dto);
             return ResponseEntity.ok("המיקום עודכן ב-DB");
@@ -105,21 +104,19 @@ public class TripController {
     }
     //שליפת מיקומים של תלמידים לפי כיתה עבור המפה
     @GetMapping("/allLocation")
-    public  ResponseEntity<List<StudentLocation>> getAllLocations(@RequestHeader("Teacher-ID") String teacherId){
-
+    public  ResponseEntity<List<Location>> getAllLocations(@RequestHeader("Teacher-ID") String teacherId){
         Teacher teacher = teacherRepo.findById(teacherId)
                 .orElseThrow(() -> new RuntimeException(teacherId + "לא מצאנו מורה עם ת.ז."));
         String classroom = teacher.getClassroom();
         List<Student> students = studentRepo.findByClassroom(classroom);
-
-        List<String> studentIds = students.stream()
+        List<String> allIds = students.stream()
                 .map(Student::getId)
                 .collect(Collectors.toList());
-
-        List<StudentLocation> locations = studentLocationRepository.findByIdIn(studentIds);
-
+        allIds.add(teacherId);
+        List<Location> locations = locationRepository.findByIdIn(allIds);
         return ResponseEntity.ok(locations);
     }
+
 
 
 }

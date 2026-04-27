@@ -310,3 +310,6 @@ button:hover {
   background-color: #4a90e2;
   transform: translateY(-2px);
 }
+/* עבור המפה */
+.green-icon { filter: hue-rotate(120deg); } 
+.red-icon { filter: hue-rotate(340deg); } 
