@@ -66,12 +66,12 @@ http://localhost:8080/h2-console
 
 npm install
 
-3.הפעל את הפרויקט:
+3. הפעל את הפרויקט:
 npm run dev
 פתח את הקישור שיופיע
 ### 2. סימולטור (Python)
-פתח את תיקיית הסימולטור ב־VS Code
-הרץ:
+1. פתח את תיקיית הסימולטור ב־VS Code
+2. הרץ:
 python simulator.py
 
 
