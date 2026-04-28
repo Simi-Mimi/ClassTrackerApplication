@@ -30,7 +30,7 @@
 |------|------------|
 | Client Side | React (JSX) + Leaflet (מפה) |
 | Server Side | Java Spring Boot (REST API) |
-| Database | H2 Database (SQL, בזיכרון) |
+| Database | H2 Database (SQL) |
 | Simulator | Python (  לשרת JSON שליחת) |
 
 ---
