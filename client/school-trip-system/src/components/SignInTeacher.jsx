@@ -34,7 +34,6 @@ export const SignInTeacher = () => {
       if (result) {
         sessionStorage.setItem("teacher", JSON.stringify(result));
         navigate("/list-student", { state: { teacher: result } });
-        // console.log("Response from server:", result);
       } else {
         setServerError("מורה לא נמצא במערכת");
       }

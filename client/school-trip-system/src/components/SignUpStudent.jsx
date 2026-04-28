@@ -102,11 +102,6 @@ export const SignUpStudent = () => {
           {errors.classroom?.id && (
             <span className="error">{errors.classroom.id.message}</span>
           )}
-          {/* {errors.classroom?.id && <span className="error">{errors.classroom.id.message}</span>} */}
-          {/* <input type="select" placeholder="כיתה" {...register("classroom")} /> */}
-          {/* {errors.classroom && (
-            <span className="error">{errors.classroom.message}</span>
-          )} */}
           <input type="submit" value="הירשם" />
         </div>
       </form>

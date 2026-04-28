@@ -137,7 +137,15 @@ public class TripController {
         List<Location> locations = locationRepo.findByIdIn(allIds);
         return ResponseEntity.ok(locations);
     }
-
+    //הוספת כיתה
+    @PostMapping("/addClass")
+    public ResponseEntity <?> addClass(@RequestBody Classroom classroom) {
+        if (classroomRepo.existsByName(classroom.getName())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("הכיתה כבר קיימת במערכת: ");
+        }
+        Classroom savedClass = classroomRepo.save(classroom);
+        return ResponseEntity.ok(savedClass);
+    }
 
 
 }

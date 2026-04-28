@@ -82,3 +82,18 @@ export const getAllClassrooms = async () => {
   const response = await fetch(`${API_URL}/classrooms`);
   return await response.json(); 
 };
+//הוספת כיתה
+export const addClass = async (data) => {
+  const response = await fetch(`${API_URL}/addClass`, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+});
+if (!response.ok) {
+  const errorMsg = await response.text();
+  throw new Error(errorMsg || 'שגיאה בשמירת הכיתה');
+}
+return await response.json();
+};

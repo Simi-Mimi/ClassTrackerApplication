@@ -7,7 +7,6 @@ export const PersonalArea = (Props) => {
   const [view, setView] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  // const teacher = location.state?.teacher;
   const [teacher, setTeacher] = useState(() => {
     const stateTeacher = location.state?.teacher;
     if (stateTeacher) {
