@@ -61,7 +61,7 @@ http://localhost:8080/h2-console
 ### 2. צד לקוח (React)
 
 1. פתח את תיקיית ה-Client ב־VS Code  
-2. פתח טרמינל והריץ:
+2. פתח טרמינל והרץ:
 
 
 npm install
