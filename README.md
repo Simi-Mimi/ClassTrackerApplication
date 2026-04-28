@@ -52,7 +52,7 @@
 3. הרץ את הפרויקט (Run Application)
 
 גישה למסד הנתונים:
-http://localhost:8080/h2-console
+`http://localhost:8080/h2-console`
 
 יש לוודא התאמה ל־JDBC URL בקובץ `application.properties`.
 
@@ -62,11 +62,11 @@ http://localhost:8080/h2-console
 2. פתח טרמינל והרץ:
 
 
-npm install
+`npm install`
 
 3. הפעל את הפרויקט:
 
-npm run dev
+`npm run dev`
 
 4. פתח את הקישור שיופיע
 
@@ -75,4 +75,4 @@ npm run dev
 1. פתח את תיקיית הסימולטור ב־VS Code
 2. הרץ:
 
-python simulator.py
+`python simulator.py`
