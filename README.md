@@ -35,11 +35,11 @@
 
 ---
 
-## 💻 דרישות קדם (Prerequisites)
+## דרישות קדם (Prerequisites)
 
 לפני הרצת הפרויקט יש לוודא התקנה של:
 
-- Java JDK 11 ומעלה + IntelliJ IDEA
+Java JDK: גרסה 11 לפחות
 - Node.js + npm
 - Python 3.x
 - VS Code (מומלץ)
