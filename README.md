@@ -65,8 +65,9 @@ http://localhost:8080/h2-console
 npm install
 
 3. הפעל את הפרויקט:
-npm run dev
+
 4. פתח את הקישור שיופיע
+npm run dev
 
 ### 2. סימולטור (Python)
 1. פתח את תיקיית הסימולטור ב־VS Code
