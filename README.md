@@ -72,6 +72,25 @@ http://localhost:8080/h2-console
 ```bash
 npm install
 
+הפעל את הפרויקט:
+npm run dev
+פתח את הקישור שיופיע (בדרך כלל):
+http://localhost:5173
+סימולטור (Python)
+פתח את תיקיית הסימולטור ב־VS Code
+הרץ:
+python simulator.py
 
+מבנה ה-API
+
+המערכת חושפת את ה־Endpoints הבאים:
+
+GET /api/students – שליפת רשימת תלמידות (עבור מורות)
+POST /api/location – קבלת עדכוני מיקום מהסימולטור
+POST /api/register – רישום משתמשים חדשים
+
+הערה
+
+הפרויקט הוגש כחלק ממטלת בית במסגרת תוכנית "הסי".
 
 
