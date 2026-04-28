@@ -72,7 +72,5 @@ npm run dev
 ### 2. סימולטור (Python)
 1. פתח את תיקיית הסימולטור ב־VS Code
 2. הרץ:
+
 python simulator.py
-
-
-
