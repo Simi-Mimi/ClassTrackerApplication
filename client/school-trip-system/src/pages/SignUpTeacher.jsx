@@ -1,9 +1,10 @@
 
-import React, { useState } from "react";
-import { registerUser } from "../services/apiService";
+import React, { useState,useEffect } from "react";
+import { registerUser,getAllClassrooms  } from "../services/apiService";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 const schema = yup
   .object({
@@ -17,11 +18,14 @@ const schema = yup
       .required("חובה להזין תעודת זהות")
       .matches(/^[0-9]+$/, "תעודת זהות חייבת להכיל ספרות בלבד")
       .length(9, "תעודת זהות חייבת להיות בדיוק 9 ספרות"),
-    classroom: yup.string().required("חובה להזין כיתה"),
+       classroom: yup.object({
+         id: yup.string().required("חובה לבחור כיתה"),
+       }),
   })
   .required();
 
 export const SignUpTeacher = () => {
+  const navigate = useNavigate();
   const [message, setMessage] = useState({ show: false, mess: "", type: "" });
   const [serverError, setServerError] = useState("");
   const {
@@ -31,16 +35,29 @@ export const SignUpTeacher = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
+    const [classrooms, setClassrooms] = useState([]);
+    useEffect(() => {
+      const fetchClasses = async () => {
+        try {
+          const data = await getAllClassrooms();
+          setClassrooms(data);
+        } catch (err) {
+          console.error("נכשל בטעינת כיתות", err);
+        }
+      };
+      fetchClasses();
+    }, []);
   const showMsg = (txt) => {
     setMessage({ show: true, mess: txt });
     setTimeout(() => setMessage({ show: false, mess: "" }), 3000);
   };
-  const onSubmit = async (data) => {
+  const onSubmit = async (formData) => {
     setServerError("");
     const result = await registerUser(formData, "teacher");
     console.log("handleSubmit");
     if (result) {
       showMsg("הרישום בוצע בהצלחה! המורה נוספה למערכת");
+      navigate("/list-student", { state: { teacher: result } });
       reset();
     } else {
       setServerError("תלמיד לא נמצא במערכת, אנא בדוק את הנתונים");
@@ -74,7 +91,15 @@ export const SignUpTeacher = () => {
             onInput={() => setServerError("")}
           />
           {errors.id && <span className="error">{errors.id.message}</span>}
-          <input type="text" placeholder="כיתה" {...register("classroom")} />
+          <select {...register("classroom.id")} className="form-select" onChange={(e) => e.target.style.color = e.target.value ? "#333" : "#757575"}
+  style={{ color: "#757575" }}>
+            <option value="">בחרי כיתה...</option>
+            {classrooms.map((cls) => (
+              <option key={cls.id} value={cls.id}>
+                {cls.name} 
+              </option>
+            ))}
+          </select>
           {errors.classroom && (
             <span className="error">{errors.classroom.message}</span>
           )}

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { IsTeacher } from "../services/apiService";
 import { useNavigate } from "react-router-dom";
@@ -20,36 +19,48 @@ const schema = yup
 
 export const SignInTeacher = () => {
   const [serverError, setServerError] = useState("");
-        const navigate = useNavigate();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    });
+  });
   const onSubmit = async (data) => {
     try {
       setServerError("");
       const result = await IsTeacher(data);
-        if (result) {
+      if (result) {
+        sessionStorage.setItem("teacher", JSON.stringify(result));
         navigate("/list-student", { state: { teacher: result } });
         // console.log("Response from server:", result);
       } else {
-        setServerError("מורה לא נמצא במערכת, אנא בדוק את הנתונים");
+        setServerError("מורה לא נמצא במערכת");
       }
     } catch (error) {
       setServerError("אירעה שגיאה בחיבור לשרת");
     }
   };
-    return (
-        <>
+  return (
+    <>
       <div className="signin-container">
         <form onSubmit={handleSubmit(onSubmit)}>
           <h2>כניסת מורה</h2>
-          {serverError && <div>{serverError}</div>}
+          {serverError && (
+            <div className="login-info-section">
+              <p className="info-text">{serverError+"- "}
+                <span
+                  className="signup-link"
+                  onClick={() => navigate("/signup-teacher")}
+                >
+                  לחצי כאן להרשמה👉
+                </span>
+              </p>
+            </div>
+          )}
           <label htmlFor="id-input">תעודת זהות:</label>
-                <input
+          <input
             id="id-input"
             type="text"
             placeholder="הכנס תעודת זהות"
@@ -62,7 +73,7 @@ export const SignInTeacher = () => {
             </p>
           )}
           <input type="submit" value="היכנס" />
-            </form>
+        </form>
       </div>
     </>
   );

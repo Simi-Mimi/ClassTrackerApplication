@@ -4,14 +4,15 @@ const API_URL = "http://localhost:8080/api";
 export const registerUser = async (userData, type) => {
   console.log(userData, type);
   try {
+    let response;
     if (type == "student") {
-        const response = await fetch(`${API_URL}/addStudent`, {
+         response = await fetch(`${API_URL}/addStudent`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
             body: JSON.stringify(userData),
         });
     } else {
-        const response = await fetch(`${API_URL}/addTeacher`, {
+         response = await fetch(`${API_URL}/addTeacher`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
             body: JSON.stringify(userData),
@@ -75,4 +76,9 @@ export const LocationStudents = async (IdData) => {
     alert("הנתון אינו תקין או שאינו במערכת");
         return null;
     }
+};
+//שליפת הכיתות
+export const getAllClassrooms = async () => {
+  const response = await fetch(`${API_URL}/classrooms`);
+  return await response.json(); 
 };

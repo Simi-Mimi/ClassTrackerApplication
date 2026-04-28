@@ -1,7 +1,5 @@
-
-import React, { useState } from "react";
-import { registerUser } from "../services/apiService";
-
+import React, { useState, useEffect } from "react";
+import { registerUser, getAllClassrooms } from "../services/apiService";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -18,7 +16,9 @@ const schema = yup
       .required("חובה להזין תעודת זהות")
       .matches(/^[0-9]+$/, "תעודת זהות חייבת להכיל ספרות בלבד")
       .length(9, "תעודת זהות חייבת להיות בדיוק 9 ספרות"),
-    classroom: yup.string().required("חובה להזין כיתה"),
+    classroom: yup.object({
+      id: yup.string().required("חובה לבחור כיתה"),
+    }),
   })
   .required();
 
@@ -29,25 +29,37 @@ export const SignUpStudent = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
+    reset,
+  } = useForm({ resolver: yupResolver(schema) });
+  const [classrooms, setClassrooms] = useState([]);
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const data = await getAllClassrooms();
+        setClassrooms(data);
+      } catch (err) {
+        console.error("נכשל בטעינת כיתות", err);
+      }
+    };
+    fetchClasses();
+  }, []);
   const showMsg = (txt) => {
     setMessage({ show: true, mess: txt });
     setTimeout(() => setMessage({ show: false, mess: "" }), 3000);
   };
-  const onSubmit = async (data) => {
+  const onSubmit = async (formData) => {
     setServerError("");
-    const result = await registerUser(formData, "student");
+    try {
+      const result = await registerUser(formData, "student");
       if (result) {
-      showMsg("הרישום בוצע בהצלחה! התלמידה נוספה למערכת");
-      reset();
-    } else {
-      setServerError("תלמיד לא נמצא במערכת, אנא בדוק את הנתונים");
-      showMsg("משהו השתבש", "error");
+        showMsg("הרישום בוצע בהצלחה! התלמידה נוספה למערכת");
+        reset();
+      } 
+    }catch(error){
+      setServerError(error.message || "משהו השתבש, אנא בדוק את הנתונים");
     }
-  };
+  }
+
   return (
     <>
       {message.show && (
@@ -77,13 +89,27 @@ export const SignUpStudent = () => {
             onInput={() => setServerError("")}
           />
           {errors.id && <span className="error">{errors.id.message}</span>}
-          <input type="text" placeholder="כיתה" {...register("classroom")} />
-          {errors.classroom && (
-            <span className="error">{errors.classroom.message}</span>
+
+          <select {...register("classroom.id")} className="form-select"onChange={(e) => e.target.style.color = e.target.value ? "#333" : "#757575"}
+  style={{ color: "#757575" }} >
+            <option value="">בחר כיתה...</option>
+            {classrooms.map((cls) => (
+              <option key={cls.id} value={cls.id}>
+                {cls.name}
+              </option>
+            ))}
+          </select>
+          {errors.classroom?.id && (
+            <span className="error">{errors.classroom.id.message}</span>
           )}
+          {/* {errors.classroom?.id && <span className="error">{errors.classroom.id.message}</span>} */}
+          {/* <input type="select" placeholder="כיתה" {...register("classroom")} /> */}
+          {/* {errors.classroom && (
+            <span className="error">{errors.classroom.message}</span>
+          )} */}
           <input type="submit" value="הירשם" />
         </div>
-    </form>
+      </form>
     </>
   );
 };

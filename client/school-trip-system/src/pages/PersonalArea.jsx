@@ -1,97 +1,33 @@
-// import { useLocation } from "react-router-dom";
-// import { ListStudent, LocationStudents } from "../services/apiService";
-// import React, { useEffect, useState } from "react";
-// import Map from "../components/Map";
-
-// export const PersonalArea = (Props) => {
-//   const location = useLocation();
-//   const teacher = location.state?.teacher;
-//   const [students, setStudents] = useState([]);
-//   const [locations, setLocations] = useState([]);
-
-//   useEffect(() => {
-//     const getStudentLists = async (Props) => {
-//       if (!teacher?.id) {
-//         return;
-//       }
-//       try {
-//         const studentList = await ListStudent(teacher.id); // שולף לי רשימת תלמידים לפי מורה
-//         setStudents(studentList);
-
-//         const studentLocations = await LocationStudents(teacher.id);
-//         setLocations(studentLocations || []);
-//       } catch (error) {
-//         console.error(error);
-//       }
-//     };
-//     getStudentLists();
-
-//     const interval = setInterval(async () => {
-//       const freshLocations = await LocationStudents(teacher.id);
-//       if (freshLocations) setLocations(freshLocations);
-//     }, 60000);
-//     return () => clearInterval(interval);
-//   }, [teacher?.id]);
-//   const teacherPos = locations.find(
-//     (loc) => String(loc.id) === String(teacher.id)
-//   );
-//   const studentsOnlyPos = locations.filter(
-//     (loc) => String(loc.id) !== String(teacher.id)
-//   );
-//   return (
-//     <>
-//       {teacher ? (
-//         <div>
-//           <h2>פרטי המורה:</h2>
-//           <p>שם: {teacher.firstName + " " + teacher.lastName}</p>
-//           <p>כיתה: {teacher.classroom}</p>
-//         </div>
-//       ) : (
-//         <p>לא נמצאו נתוני מורה</p>
-//       )}
-//       <h1>רשימת התלמידות שלי</h1>
-//       <ul>
-//         {students.map((studentList) => (
-//           <li key={studentList.id}>
-//             <p>שם: {studentList.firstName + " " + studentList.lastName}</p>
-//             <p>ת.ז.: {studentList.id}</p>
-//             <p>כיתה: {studentList.classroom}</p>
-//           </li>
-//         ))}
-//       </ul>
-//       <h1>היכן התלמידות עכשיו?</h1>
-//       <Map 
-//     //   studentsLocations={studentsOnlyPos}
-//        teacherLocation={teacherPos}
-//        studentsLocations={studentsOnlyPos.map(loc => {
-//         // מחפשים את פרטי התלמידה ברשימת הסטודנטים לפי ה-ID
-//         const studentInfo = students.find(s => String(s.id) === String(loc.id));
-//         return {
-//             ...loc,
-//             firstName: studentInfo ? studentInfo.firstName : "תלמידה",
-//             lastName: studentInfo ? studentInfo.lastName : "לא ידוע"
-//         };
-//     })}
-//         />
-//         <br></br>
-//     </>
-//   );
-// };
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ListStudent, LocationStudents } from "../services/apiService";
 import React, { useEffect, useState } from "react";
 import Map from "../components/Map";
 
 export const PersonalArea = (Props) => {
+  const [view, setView] = useState("");
+  const navigate = useNavigate();
   const location = useLocation();
-  const teacher = location.state?.teacher;
+  // const teacher = location.state?.teacher;
+  const [teacher, setTeacher] = useState(() => {
+    const stateTeacher = location.state?.teacher;
+    if (stateTeacher) {
+      sessionStorage.setItem("teacher", JSON.stringify(stateTeacher));
+      return stateTeacher;
+    }
+    const savedTeacher = sessionStorage.getItem("teacher");
+    return savedTeacher ? JSON.parse(savedTeacher) : null;
+  });
   const [students, setStudents] = useState([]);
   const [locations, setLocations] = useState([]);
 
   useEffect(() => {
+    if (!teacher?.id) {
+      navigate("/signup-teacher");
+      return;
+    }
     const getStudentLists = async () => {
       if (!teacher?.id) return;
-      
+
       try {
         const studentList = await ListStudent(teacher.id);
         setStudents(studentList);
@@ -109,61 +45,85 @@ export const PersonalArea = (Props) => {
       if (freshLocations) setLocations(freshLocations);
     }, 60000);
     return () => clearInterval(interval);
-  }, [teacher?.id]);
+  }, [teacher?.id, navigate]);
 
-  // מציאת מיקום המורה והזרקת השם שלו
   const teacherPosRaw = locations.find(
     (loc) => String(loc.id) === String(teacher?.id)
   );
-  
-  const teacherLocationWithNames = teacherPosRaw ? {
-    ...teacherPosRaw,
-    firstName: teacher.firstName,
-    lastName: teacher.lastName
-  } : null;
 
-  // סינון מיקומי תלמידות והזרקת שמותיהן
+  const teacherLocationWithNames = teacherPosRaw
+    ? {
+        ...teacherPosRaw,
+        firstName: teacher.firstName,
+        lastName: teacher.lastName,
+      }
+    : null;
+
   const studentsOnlyPos = locations.filter(
     (loc) => String(loc.id) !== String(teacher?.id)
   );
 
-  const enrichedStudentLocations = studentsOnlyPos.map(loc => {
-    const studentInfo = students.find(s => String(s.id) === String(loc.id));
+  const enrichedStudentLocations = studentsOnlyPos.map((loc) => {
+    const studentInfo = students.find((s) => String(s.id) === String(loc.id));
     return {
       ...loc,
       firstName: studentInfo ? studentInfo.firstName : "תלמידה",
-      lastName: studentInfo ? studentInfo.lastName : "" // שם משפחה
+      lastName: studentInfo ? studentInfo.lastName : "",
     };
   });
-
+  // מחשב את המרחק בין המורה לתלמידה
+  const getDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+  };
   return (
     <>
       {teacher ? (
         <div>
           <h2>פרטי המורה:</h2>
           <p>שם: {teacher.firstName + " " + teacher.lastName}</p>
-          <p>כיתה: {teacher.classroom}</p>
+          <p>כיתה: {teacher.classroom?.name}</p>
         </div>
       ) : (
         <p>לא נמצאו נתוני מורה</p>
       )}
+      <button onClick={() => setView("list")}>📋 רשימת התלמידות שלי</button>
+      <button onClick={() => setView("map")}>🔎 פתיחת מפה מלאה</button>
 
-      <h1>רשימת התלמידות שלי</h1>
-      <ul>
-        {students.map((student) => (
-          <li key={student.id}>
-            <p>שם: {student.firstName + " " + student.lastName}</p>
-            <p>ת.ז.: {student.id}</p>
-            <p>כיתה: {student.classroom}</p>
-          </li>
-        ))}
-      </ul>
+      {view === "list" && (
+      <>
+        <h1>רשימת התלמידות שלי</h1>
+        <ul>
+          {students.map((student) => (
+            <li key={student.id}>
+              <p>שם: {student.firstName + " " + student.lastName}</p>
+              <p>ת.ז.: {student.id}</p>
+            </li>
+          ))}
+        </ul>
+      </>
+    )}
 
-      <h1>היכן התלמידות עכשיו?</h1>
-      <Map 
-        teacherLocation={teacherLocationWithNames}
-        studentsLocations={enrichedStudentLocations}
-      />
+    {view === "map" && (
+      <>
+        <h1>היכן התלמידות עכשיו?</h1>
+        <div style={{ height: "500px", width: "100%" }}>
+          <Map
+            teacherLocation={teacherLocationWithNames}
+            studentsLocations={enrichedStudentLocations}
+          />
+        </div>
+      </>
+    )}
+
     </>
   );
 };

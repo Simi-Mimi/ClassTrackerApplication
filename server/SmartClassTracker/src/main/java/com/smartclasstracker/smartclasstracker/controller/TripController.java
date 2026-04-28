@@ -1,9 +1,11 @@
 package com.smartclasstracker.smartclasstracker.controller;
 
 import com.smartclasstracker.smartclasstracker.DTO.LocationDTO;
+import com.smartclasstracker.smartclasstracker.models.Classroom;
 import com.smartclasstracker.smartclasstracker.models.Student;
 import com.smartclasstracker.smartclasstracker.models.Location;
 import com.smartclasstracker.smartclasstracker.models.Teacher;
+import com.smartclasstracker.smartclasstracker.repository.ClassroomRepository;
 import com.smartclasstracker.smartclasstracker.repository.LocationRepository;
 import com.smartclasstracker.smartclasstracker.repository.StudentRepository;
 import com.smartclasstracker.smartclasstracker.repository.TeacherRepository;
@@ -28,11 +30,21 @@ public class TripController {
     private TeacherRepository teacherRepo;
 
     @Autowired
-    private LocationRepository locationRepository;
+    private LocationRepository locationRepo;
+
+    @Autowired
+    private ClassroomRepository classroomRepo;
+
+    //שליפת כיתה
+    @GetMapping("/classrooms")
+    public ResponseEntity<List<Classroom>> getAllClassrooms() {
+        return ResponseEntity.ok(classroomRepo.findAll());
+    }
     //חלק א'
     //הוספת תלמידה
     @PostMapping("/addStudent")
     public ResponseEntity<?> addStudent(@RequestBody Student student) {
+        //בדיקה אם יש תלמידה עם אותה ת.ז.
         if (studentRepo.existsById(student.getId())) {
             Student existingStudent = studentRepo.findById(student.getId()).get();
             return ResponseEntity.status(HttpStatus.CONFLICT).body("התלמידה כבר קיימת במערכת: " + existingStudent.getFirstName());
@@ -40,13 +52,22 @@ public class TripController {
         Student savedStudent = studentRepo.save(student);
         return ResponseEntity.ok(savedStudent);
     }
-
     //הוספת מורה
     @PostMapping("/addTeacher")
     public ResponseEntity<?> addTeacher(@RequestBody Teacher teacher) {
+        //בדיקה אם יש מורה עם אותה ת.ז.
         if (teacherRepo.existsById(teacher.getId())) {
             Teacher existingTeacher = teacherRepo.findById(teacher.getId()).get();
             return ResponseEntity.status(HttpStatus.CONFLICT).body("המורה כבר קיימת במערכת: " + existingTeacher.getFirstName());
+        }
+        //מוודא שאכן יש כיתב בJSON שהגיע
+        if (teacher.getClassroom() != null) {
+            Optional<Teacher> existingTeacher = teacherRepo.findByClassroom(teacher.getClassroom());
+            if (existingTeacher.isPresent()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("שגיאה: לכיתה זו כבר רשומה מורה אחרת (" +
+                                existingTeacher.get().getFirstName() + ").");
+            }
         }
         Teacher savedTeacher = teacherRepo.save(teacher);
         return ResponseEntity.ok(savedTeacher);
@@ -74,7 +95,7 @@ public class TripController {
    public ResponseEntity<?> getStudentsByTeacher(@RequestHeader("Teacher-ID") String teacherId) {
        Optional<Teacher> teacherOpt = teacherRepo.findById(teacherId);
        if(teacherOpt.isPresent()){
-           String classroom = teacherOpt.get().getClassroom();
+           Classroom classroom = teacherOpt.get().getClassroom();
            List<Student> students = studentRepo.findByClassroom(classroom);
            return ResponseEntity.ok(students);
        }else{
@@ -107,13 +128,13 @@ public class TripController {
     public  ResponseEntity<List<Location>> getAllLocations(@RequestHeader("Teacher-ID") String teacherId){
         Teacher teacher = teacherRepo.findById(teacherId)
                 .orElseThrow(() -> new RuntimeException(teacherId + "לא מצאנו מורה עם ת.ז."));
-        String classroom = teacher.getClassroom();
+        Classroom classroom = teacher.getClassroom();
         List<Student> students = studentRepo.findByClassroom(classroom);
         List<String> allIds = students.stream()
                 .map(Student::getId)
                 .collect(Collectors.toList());
         allIds.add(teacherId);
-        List<Location> locations = locationRepository.findByIdIn(allIds);
+        List<Location> locations = locationRepo.findByIdIn(allIds);
         return ResponseEntity.ok(locations);
     }
 
