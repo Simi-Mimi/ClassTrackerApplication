@@ -46,7 +46,7 @@
 
 ---
 
-## ⚙️ הוראות הרצה
+## הוראות הרצה
 
 ### 1. צד שרת (Java Spring Boot)
 
@@ -66,7 +66,7 @@ http://localhost:8080/h2-console
 1. פתח את תיקיית ה-Client ב־VS Code  
 2. פתח טרמינל והריץ:
 
-```bash
+
 npm install
 
 הפעל את הפרויקט:
