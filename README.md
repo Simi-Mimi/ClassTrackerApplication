@@ -1,11 +1,6 @@
-#  Class Tracker Application
-##טכנולוגיות
-* **Client:** React
-* **Server:** Java Spring Boot
-* **Database:** SQL H2
-* **Simulator:** Python
-## 🛠 טכנולוגיות בשימוש
-* **צד לקוח:** React.js (שימוש ב-Leaflet/Google Maps עבור המפה).
+#  מערכת ניהול טיול שנתי - בנות משה
+##טכנולוגיות 
+* **צד לקוח:** React.jsx (שימוש ב-Leaflet עבור המפה).
 * **צד שרת:** Java Spring Boot.
-* **מאגר מידע:** SQL H2 (In-Memory).
+* **מאגר מידע:** SQL H2.
 * **סימולטור:** Python (שולח נתוני מיקום בפורמט JSON).
