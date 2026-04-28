@@ -38,7 +38,7 @@
 ## דרישות קדם (Prerequisites)
 
 ### לפני הרצת הפרויקט יש לוודא התקנה של:
-1.שרת- Java JDK גרסא 11 לפחות, Node.js+npm
+1. שרת- Java JDK גרסא 11 לפחות, Node.js+npm
 2. לקוח- VS Code (מומלץ)
 3. סימולטור- Python 3.x
 
