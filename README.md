@@ -68,12 +68,12 @@
 
 `python simulator.py`
 
-## ממשק משתמש
+## שימוש במערכת
 הכניסה למערכת מתבצעת דרך עמוד הבית, בו ניתן לבחור את סוג המשתמש (מורה או מנהל). כל כניסה דורשת הזנת מספר תעודת זהות (ת.ז) לאימות.
 
 <img width="1366" height="610" alt="image" src="https://github.com/user-attachments/assets/89ad8406-e180-4a5d-a051-d97543c6d7a9" />
 
-ממשק מנהל
+# ממשק מנהל
 ממשק המנהל מכיל הוספת מורים, תלמידים וכיתות
 הראשון שייכנס לממשק המנהל יצטרך להירשם ויהפוך למנהל המערכת
 <img width="1366" height="605" alt="image" src="https://github.com/user-attachments/assets/bbd975f5-20cd-40c6-8f91-6d48b2216ba6" />
@@ -81,9 +81,17 @@
 <img width="1366" height="600" alt="image" src="https://github.com/user-attachments/assets/3c982020-bc4c-43fc-8ae2-4514b64abda4" />
 <img width="1329" height="609" alt="image" src="https://github.com/user-attachments/assets/f3c1c1cd-caf7-456e-ba57-e2e258f4d795" />
 
-ממשק מורה
+# ממשק מורה
 ממשק המכיל צפיה ברשימת התלמידות של המורה שנכנס כעת למערכת, וכן צפיה במפה המסמנת את מיקומי התלמידים- מורה בירוק, תלמידים בכחול ותלמידים שהתרחקו מסומנים באדום,
 תלמיד שיתרחק יופיע עליו ברשימת התלמידים אזהרה, ובלחיצה על התלמיד המורה ינווט למפה
+<img width="1366" height="605" alt="image" src="https://github.com/user-attachments/assets/627eb67d-25e9-4f50-922c-1ff8a9be7ef7" />
+<img width="1365" height="607" alt="image" src="https://github.com/user-attachments/assets/1a246a22-07c0-4eda-82d8-a0e3eb92e225" />
+<img width="1366" height="608" alt="image" src="https://github.com/user-attachments/assets/7d1a1236-e2d7-4649-9e6a-e22e0dab2468" />
+<img width="1365" height="609" alt="image" src="https://github.com/user-attachments/assets/76ae5a2c-44cb-4ae6-a77b-95dda4010e6d" />
+
+
+
+
 
 
 
