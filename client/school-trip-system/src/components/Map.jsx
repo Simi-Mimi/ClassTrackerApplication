@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-
+import { getDistance } from '../pages/TeacherArea';
 
 export const Map = ({ studentsLocations, teacherLocation }) => {
   //אייקון ירוק
@@ -38,8 +38,6 @@ export const Map = ({ studentsLocations, teacherLocation }) => {
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
   });
-
-
 
   const MapBoundsUpdater = ({ locations, teacherLoc }) => {
     const map = useMap();

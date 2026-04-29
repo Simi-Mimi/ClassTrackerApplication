@@ -25,9 +25,21 @@ const schema = yup
   .required();
 
 export const SignUpTeacher = () => {
+      const [isAuthorized, setIsAuthorized] = useState(false);
   const navigate = useNavigate();
   const [message, setMessage] = useState({ show: false, mess: "", type: "" });
   const [serverError, setServerError] = useState("");
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const data = await getAllClassrooms();
+        setClassrooms(data);
+      } catch (err) {
+        console.error("נכשל בטעינת כיתות", err);
+      }
+    };
+    fetchClasses();
+  }, []);
   const {
     register,
     handleSubmit,
@@ -36,34 +48,46 @@ export const SignUpTeacher = () => {
     resolver: yupResolver(schema),
   });
     const [classrooms, setClassrooms] = useState([]);
-    useEffect(() => {
-      const fetchClasses = async () => {
-        try {
-          const data = await getAllClassrooms();
-          setClassrooms(data);
-        } catch (err) {
-          console.error("נכשל בטעינת כיתות", err);
-        }
-      };
-      fetchClasses();
-    }, []);
+        useEffect(() => {
+          const adminData = sessionStorage.getItem("user");
+          console.log("Data in storage:", adminData);
+
+          if (adminData) {
+              const user = JSON.parse(adminData);
+              if (user.role === "SCHOOL_MANAGER") {
+                  setIsAuthorized(true);
+              } else {
+                  navigate('/teacher-area'); 
+              }
+          } else {
+              navigate('/');
+          }
+      }, [navigate]);
+      if (!isAuthorized) {
+        return null;
+    }
+
   const showMsg = (txt) => {
     setMessage({ show: true, mess: txt });
     setTimeout(() => setMessage({ show: false, mess: "" }), 3000);
   };
   const onSubmit = async (formData) => {
     setServerError("");
-    const result = await registerUser(formData, "teacher");
+    const storedUser = sessionStorage.getItem("user");
+    const user = JSON.parse(storedUser);
+    const adminId = user.id
+
+    try{  
+    const result = await registerUser(formData, "teacher",adminId);
     console.log("handleSubmit");
-    if (result) {
       showMsg("הרישום בוצע בהצלחה! המורה נוספה למערכת");
-      navigate("/list-student", { state: { teacher: result } });
+      navigate("/teacher-area", { state: { teacher: result } });
       reset();
-    } else {
-      setServerError("תלמיד לא נמצא במערכת, אנא בדוק את הנתונים");
-      showMsg("משהו השתבש", "error");
+    }catch(errors){
+      setServerError(errors.message || "אירעה שגיאה ברישום המורה");
     }
-  };
+  }
+
   return (
     <>
       {message.show && <div>{message.mess}</div>}

@@ -5,11 +5,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Getter//lombok
-@Setter//lombok
+@Getter
+@Setter
+@NoArgsConstructor
 public class Student {
     @Id
     private String id;
@@ -19,7 +21,5 @@ public class Student {
     @JoinColumn(name = "classroom_id")
     private Classroom classroom;
 
-    public Student() {
-    }
 }
 

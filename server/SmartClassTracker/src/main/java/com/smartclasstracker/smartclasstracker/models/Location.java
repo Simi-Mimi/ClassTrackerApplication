@@ -2,13 +2,15 @@ package com.smartclasstracker.smartclasstracker.models;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Getter//lombok
-@Setter//lombok
+@Getter
+@Setter
+@NoArgsConstructor
 public class Location {
     @Id
     private String id;

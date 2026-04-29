@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { registerUser, getAllClassrooms } from "../services/apiService";
+
+import React, { useState,useEffect } from "react";
+import { registerUser,getAllClassrooms  } from "../services/apiService";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -17,39 +18,17 @@ const schema = yup
       .required("חובה להזין תעודת זהות")
       .matches(/^[0-9]+$/, "תעודת זהות חייבת להכיל ספרות בלבד")
       .length(9, "תעודת זהות חייבת להיות בדיוק 9 ספרות"),
-    classroom: yup.object({
-      id: yup.string().required("חובה לבחור כיתה"),
-    }),
+       classroom: yup.object({
+         id: yup.string().required("חובה לבחור כיתה"),
+       }),
   })
   .required();
 
-export const SignUpStudent = () => {
+export const SignUpAdmin = () => {
+      const [isAuthorized, setIsAuthorized] = useState(false);
   const navigate = useNavigate();
-  const [isAuthorized, setIsAuthorized] = useState(false);
   const [message, setMessage] = useState({ show: false, mess: "", type: "" });
   const [serverError, setServerError] = useState("");
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({ resolver: yupResolver(schema) });
-  const [classrooms, setClassrooms] = useState([]);
-  useEffect(() => {
-    const adminData = sessionStorage.getItem("user");
-    console.log("Data in storage:", adminData);
-    if (adminData) {
-      const user = JSON.parse(adminData);
-      if (user.role === "SCHOOL_MANAGER") {
-        setIsAuthorized(true);
-      } else {
-        navigate("/teacher-area");
-      }
-    } else {
-      navigate("/");
-    }
-  }, [navigate]);
-
   useEffect(() => {
     const fetchClasses = async () => {
       try {
@@ -61,40 +40,66 @@ export const SignUpStudent = () => {
     };
     fetchClasses();
   }, []);
-  if (!isAuthorized) {
-    return null;
-  }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+    const [classrooms, setClassrooms] = useState([]);
+        useEffect(() => {
+          const adminData = sessionStorage.getItem("user");
+          console.log("Data in storage:", adminData);
+
+          if (adminData) {
+              const user = JSON.parse(adminData);
+              if (user.role === "SCHOOL_MANAGER") {
+                  setIsAuthorized(true);
+              } else {
+                  navigate('/admin-area'); 
+              }
+          } else {
+              navigate('/');
+          }
+      }, [navigate]);
+      if (!isAuthorized) {
+        return null;
+    }
+
   const showMsg = (txt) => {
     setMessage({ show: true, mess: txt });
     setTimeout(() => setMessage({ show: false, mess: "" }), 3000);
   };
   const onSubmit = async (formData) => {
     setServerError("");
-    try {
-      const result = await registerUser(formData, "student");
-      if (result) {
-        showMsg("הרישום בוצע בהצלחה! התלמידה נוספה למערכת");
-        reset();
-      }
-    } catch (error) {
-      setServerError(error.message || "משהו השתבש, אנא בדוק את הנתונים");
+    const storedUser = sessionStorage.getItem("user");
+    const user = JSON.parse(storedUser);
+    const adminId = user.id
+
+    try{  
+    const result = await registerUser(formData, "teacher",adminId);
+    console.log("handleSubmit");
+      showMsg("הרישום בוצע בהצלחה! המנהל נוספה למערכת");
+      navigate("/teacher-area", { state: { teacher: result } });
+      reset();
+    }catch(errors){
+      setServerError(errors.message || "אירעה שגיאה ברישום מנהל");
     }
-  };
+  }
 
   return (
     <>
-      {message.show && (
-        <div className="notification-card success">{message.mess}</div>
-      )}
+      {message.show && <div>{message.mess}</div>}
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h2> רישום תלמידה חדשה</h2>
-        {serverError && (
-          <p className="error-msg" style={{ color: "red" }}>
-            {serverError}
-          </p>
-        )}
+        <h2>רישום מורה</h2>
         <div>
+          {serverError && (
+            <p className="error-msg" style={{ color: "red" }}>
+              {serverError}
+            </p>
+          )}
           <input type="text" placeholder="שם פרטי" {...register("firstName")} />
           {errors.firstName && (
             <span className="error">{errors.firstName.message}</span>
@@ -110,24 +115,17 @@ export const SignUpStudent = () => {
             onInput={() => setServerError("")}
           />
           {errors.id && <span className="error">{errors.id.message}</span>}
-
-          <select
-            {...register("classroom.id")}
-            className="form-select"
-            onChange={(e) =>
-              (e.target.style.color = e.target.value ? "#333" : "#757575")
-            }
-            style={{ color: "#757575" }}
-          >
-            <option value="">בחר כיתה...</option>
+          <select {...register("classroom.id")} className="form-select" onChange={(e) => e.target.style.color = e.target.value ? "#333" : "#757575"}
+  style={{ color: "#757575" }}>
+            <option value="">בחרי כיתה...</option>
             {classrooms.map((cls) => (
               <option key={cls.id} value={cls.id}>
-                {cls.name}
+                {cls.name} 
               </option>
             ))}
           </select>
-          {errors.classroom?.id && (
-            <span className="error">{errors.classroom.id.message}</span>
+          {errors.classroom && (
+            <span className="error">{errors.classroom.message}</span>
           )}
           <input type="submit" value="הירשם" />
         </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IsTeacher } from "../services/apiService";
+import { IsAdmin, IsTeacher } from "../services/apiService";
 import { useNavigate } from "react-router-dom";
 
 import { useForm } from "react-hook-form";
@@ -17,7 +17,7 @@ const schema = yup
   })
   .required();
 
-export const SignInTeacher = () => {
+export const SignInAdmin = () => {
   const [serverError, setServerError] = useState("");
   const navigate = useNavigate();
   const {
@@ -30,12 +30,12 @@ export const SignInTeacher = () => {
   const onSubmit = async (data) => {
     try {
       setServerError("");
-      const result = await IsTeacher(data);
+      const result = await IsAdmin(data);
       if (result) {
         sessionStorage.setItem("user", JSON.stringify(result));
-        navigate("/teacher-area", { state: { user: result } });
+        navigate("/admin-area", { state: { teacher: result } });
       } else {
-        setServerError("מורה לא נמצא במערכת");
+        setServerError("מנהל לא נמצא במערכת");
       }
     } catch (error) {
       setServerError("אירעה שגיאה בחיבור לשרת");
@@ -45,7 +45,7 @@ export const SignInTeacher = () => {
     <>
       <div className="signin-container">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <h2>כניסת מורה</h2>
+          <h2>כניסת מנהל מערכת</h2>
           {serverError && (
             <div className="login-info-section">
               <p className="info-text">{serverError+"- "}

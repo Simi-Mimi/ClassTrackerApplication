@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { addClass } from "../services/apiService";
 export const AddClass = () => {
+ const [isAuthorized, setIsAuthorized] = useState(false);
   const navigate = useNavigate();
   const [className, setClassName] = useState("");
   const [error, setError] = useState("");
@@ -30,6 +31,24 @@ export const AddClass = () => {
       setError(err.message);
     }
   };
+      useEffect(() => {
+        const adminData = sessionStorage.getItem("user");
+        console.log("Data in storage:", adminData);
+        if (adminData) {
+            const user = JSON.parse(adminData);
+            if (user.role === "SCHOOL_MANAGER") {
+                setIsAuthorized(true);
+            } else {
+                navigate('/teacher-area'); 
+            }
+        } else {
+            navigate('/');
+        }
+    }, [navigate]);
+  
+    if (!isAuthorized) {
+      return null;
+  }
   return (
     <>
       <div style={{ padding: "20px", direction: "rtl" }}>
@@ -38,7 +57,7 @@ export const AddClass = () => {
           <div>
             <span>{message.text} 
             </span>
-            <span className="signup-link" onClick={() => navigate("/admin")}>
+            <span className="signup-link" onClick={() => navigate("/admin-area")}>
               לחצי כאן לחזרה לדף מנהל 👉
             </span>
           </div>

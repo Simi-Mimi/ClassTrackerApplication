@@ -5,10 +5,11 @@ import { SignUpStudent } from './components/SignUpStudent';
 import { Home } from '../src/pages/Home';
 import { SignUpTeacher } from './components/SignUpTeacher';
 import { SignInTeacher } from './components/SignInTeacher';
-import { PersonalArea } from '../src/pages/PersonalArea';
+import { TeacherArea } from '../src/pages/TeacherArea';
 import NavBar from '../src/components/NavBar';
-import { Admin } from './pages/Admin';
+import { AdminArea } from './pages/AdminArea';
 import { AddClass } from './components/AddClass';
+import { SignInSignUpAdmin } from './components/SignInSignUpAdmin';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -24,13 +25,13 @@ function App() {
         <Route path="/signup-student" element={<SignUpStudent />} />
         <Route path="/signup-teacher" element={<SignUpTeacher />} />
         <Route path="/signin-teacher" element={<SignInTeacher />} />
-        <Route path="/addClass" element={<AddClass />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/list-student" element={<PersonalArea />} />
+        <Route path="/signin-signup-admin" element={<SignInSignUpAdmin />} />
+        <Route path="/add-class" element={<AddClass />} />
+        <Route path="/admin-area" element={<AdminArea />} />
+        <Route path="/teacher-area" element={<TeacherArea />} />
       </Routes>
 
     </>
   )
 }
-
 export default App

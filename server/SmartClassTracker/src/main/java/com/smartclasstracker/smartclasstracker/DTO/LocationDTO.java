@@ -1,10 +1,12 @@
 package com.smartclasstracker.smartclasstracker.DTO;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter//lombok
-@Setter//lombok
+@Getter
+@Setter
+@NoArgsConstructor
 public class LocationDTO {
 
     private Long id;
@@ -22,8 +24,6 @@ public class LocationDTO {
         private int degrees;
         private int minutes;
         private int seconds;
-    }
-    public LocationDTO() {
     }
 }
 
