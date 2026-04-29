@@ -57,8 +57,15 @@
 4. פתח את הקישור שיופיע
 
 
+
+### ממשק משתמש
+
+
+
 ### 2. סימולטור (Python)
 1. פתח את תיקיית הסימולטור ב־VS Code
 2. הרץ:
 
 `python simulator.py`
+
+<img width="1366" height="610" alt="image" src="https://github.com/user-attachments/assets/89ad8406-e180-4a5d-a051-d97543c6d7a9" />
