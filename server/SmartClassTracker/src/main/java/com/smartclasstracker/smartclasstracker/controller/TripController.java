@@ -54,7 +54,7 @@ public class TripController {
         Student savedStudent = studentRepo.save(student);
         return ResponseEntity.ok(savedStudent);
     }
-    //הוספת מורה
+    //הוספת מורה ומנהל
     @PostMapping("/addTeacher")
     public ResponseEntity<?> addTeacher(@RequestBody Teacher teacher,@RequestHeader(value = "Admin-ID", required = false) String adminId) {
         try {

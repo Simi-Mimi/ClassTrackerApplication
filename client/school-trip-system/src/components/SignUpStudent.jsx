@@ -73,7 +73,7 @@ export const SignUpStudent = () => {
     try {
       const result = await registerUser(formData, "student");
       if (result) {
-        showMsg("הרישום בוצע בהצלחה! התלמידה נוספה למערכת");
+        showMsg("הרישום בוצע בהצלחה! התלמיד נוסף למערכת");
         reset();
       }
     } catch (error) {
@@ -88,7 +88,7 @@ export const SignUpStudent = () => {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h2> רישום תלמידה חדשה</h2>
+        <h2> רישום תלמיד חדש</h2>
         {serverError && (
           <p className="error-msg" style={{ color: "red" }}>
             {serverError}

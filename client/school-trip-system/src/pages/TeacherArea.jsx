@@ -3,24 +3,25 @@ import { ListStudent, LocationStudents } from "../services/apiService";
 import React, { useEffect, useState } from "react";
 import Map from "../components/Map";
 
-  // מחשב את המרחק בין המורה לתלמידה
-  export const getDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371;
-    const dLat = ((lat2 - lat1) * Math.PI) / 180;
-    const dLon = ((lon2 - lon1) * Math.PI) / 180;
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos((lat1 * Math.PI) / 180) *
-        Math.cos((lat2 * Math.PI) / 180) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
-  };
+// מחשב את המרחק בין המורה לתלמידה
+export const getDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+};
 
 export const TeacherArea = (Props) => {
   const [view, setView] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const [selectedLocation, setSelectedLocation] = useState(null);
   const [teacher, setTeacher] = useState(() => {
     const stateTeacher = location.state?.teacher;
     if (stateTeacher) {
@@ -58,7 +59,6 @@ export const TeacherArea = (Props) => {
     }, 60000);
     return () => clearInterval(interval);
   }, [teacher?.id, navigate]);
-  
 
   const teacherPosRaw = locations.find(
     (loc) => String(loc.id) === String(teacher?.id)
@@ -100,31 +100,64 @@ export const TeacherArea = (Props) => {
       <button onClick={() => setView("map")}>🔎 פתיחת מפה מלאה</button>
 
       {view === "list" && (
-      <>
-        <h1>רשימת התלמידות שלי</h1>
-        <ul>
-          {students.map((student) => (
-            <li key={student.id}>
-              <p>שם: {student.firstName + " " + student.lastName}</p>
-              <p>ת.ז.: {student.id}</p>
-            </li>
-          ))}
-        </ul>
-      </>
-    )}
+        <>
+          <h1>רשימת התלמידות שלי</h1>
+          <ul>
+            {students.map((student) => {
+              const studentPos = locations.find(
+                (loc) => String(loc.id) === String(student.id)
+              );
 
-    {view === "map" && (
-      <>
-        <h1>היכן התלמידות עכשיו?</h1>
-        <div style={{ height: "500px", width: "100%" }}>
-          <Map
-            teacherLocation={teacherLocationWithNames}
-            studentsLocations={enrichedStudentLocations}
-          />
-        </div>
-      </>
-    )}
+              let isFar = false;
+              // חישוב מרחק אם יש מיקום למורה ולתלמידה
+              if (studentPos && teacherLocationWithNames) {
+                const dist = getDistance(
+                  teacherLocationWithNames.latitude,
+                  teacherLocationWithNames.longitude,
+                  studentPos.latitude,
+                  studentPos.longitude
+                );
+                console.log(studentPos.lng+" studentPos.lng");
+                if (dist > 3) isFar = true; 
+              }
+              return (
+                <li
+                  key={student.id}
+                  onClick={() => {
+                    if (studentPos) {
+                      setSelectedLocation([studentPos.lat, studentPos.lng]);
+                      setView("map");
+                    } else {
+                      alert("לא נמצא מיקום עבור תלמידה זו");
+                    }
+                  }}
+                >
+                  <p>
+                    <strong>
+                      שם: {student.firstName + " " + student.lastName}<br></br>
+                      {isFar && <span style={{ color: "red", marginRight: "10px" }}>⚠️ רחוק מהקבוצה!</span>}
+                    </strong>
+                  </p>
+                  <p>ת.ז.: {student.id}</p>
+                  <hr />
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
 
+      {view === "map" && (
+        <>
+          <h1>היכן התלמידות עכשיו?</h1>
+          <div style={{ height: "500px", width: "100%" }}>
+            <Map
+              teacherLocation={teacherLocationWithNames}
+              studentsLocations={enrichedStudentLocations}
+            />
+          </div>
+        </>
+      )}
     </>
   );
 };

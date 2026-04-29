@@ -33,6 +33,26 @@ export const registerUser = async (userData, type, adminId) => {
     throw error;
   }
 };
+//רישום מנהל
+export const registerAdmin = async (userData) => {
+  try {
+    const response = await fetch(`${API_URL}/addTeacher`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 //בדיקה האם זה מורה
 export const IsTeacher = async (IdData) => {
   try {

@@ -81,10 +81,11 @@ export const SignUpTeacher = () => {
     const result = await registerUser(formData, "teacher",adminId);
     console.log("handleSubmit");
       showMsg("הרישום בוצע בהצלחה! המורה נוספה למערכת");
+      sessionStorage.setItem("user", JSON.stringify(result));
       navigate("/teacher-area", { state: { teacher: result } });
       reset();
-    }catch(errors){
-      setServerError(errors.message || "אירעה שגיאה ברישום המורה");
+    }catch(err){
+      setServerError(err.message || "אירעה שגיאה ברישום המורה");
     }
   }
 

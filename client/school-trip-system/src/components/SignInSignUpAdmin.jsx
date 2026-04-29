@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { checkAdminStatus } from "../services/apiService";
 import { SignInAdmin } from "./SignInAdmin";
+import { SignUpAdmin } from "./SignUpAdmin";
 
 export const SignInSignUpAdmin = () => {
   const [view, setView] = useState("");
@@ -23,7 +24,7 @@ export const SignInSignUpAdmin = () => {
 
       {view === "signup" && (
         <>
-          <h1>רישום מנהל</h1>
+          <SignUpAdmin />
         </>
       )}
 

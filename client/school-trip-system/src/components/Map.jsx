@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-import { getDistance } from '../pages/TeacherArea';
+import iconShadow from "leaflet/dist/images/marker-shadow.png";
+import { getDistance } from "../pages/TeacherArea";
 
 export const Map = ({ studentsLocations, teacherLocation }) => {
   //אייקון ירוק

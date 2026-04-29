@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
   const navigate = useNavigate();
+  console.log();
   return (
     <>
       <div>
@@ -18,10 +19,18 @@ export const Home = () => {
         >
           כניסת מנהל
         </button>
-        {/* <button onClick={() => navigate("/signin-signup-admin")}>
-          כניסת מנהל
-        </button> */}
-        <button onClick={() => navigate("/signin-teacher")}>כניסת מורה</button>
+        <button
+          onClick={() => {
+            const user = JSON.parse(sessionStorage.getItem("user") || "null");
+            navigate(
+              user?.role === "TEACHER" || user?.role === "SCHOOL_MANAGER"
+                ? "/teacher-area"
+                : "/signin-teacher"
+            );
+          }}
+        >
+          כניסת מורה
+        </button>
       </div>
     </>
   );

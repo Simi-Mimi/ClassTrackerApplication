@@ -26,8 +26,8 @@ export const AdminArea = () => {
   return (
     <>
       <div>
-        <button onClick={() => navigate('/signup-student')}>לרישום כתלמיד</button>
-        <button onClick={() => navigate('/signup-teacher')}>לרישום כמורה</button>
+        <button onClick={() => navigate('/signup-student')}> הוספת תלמיד</button>
+        <button onClick={() => navigate('/signup-teacher')}> הוספת מורה</button>
         <button onClick={() => navigate('/add-class')}>הוספת כיתה</button>
       </div>
     </>
