@@ -89,6 +89,11 @@
 <img width="1366" height="608" alt="image" src="https://github.com/user-attachments/assets/7d1a1236-e2d7-4649-9e6a-e22e0dab2468" />
 <img width="1365" height="609" alt="image" src="https://github.com/user-attachments/assets/76ae5a2c-44cb-4ae6-a77b-95dda4010e6d" />
 
+## הנחות מקלות
+1. אין מחיקת רשומות כלל
+2. בשביל לדמות כיצד המערכת עובדת, יצרתי קובץ סימולציה נפרד המדמה את מכשיר האיכון
+3. 
+
 
 
 
