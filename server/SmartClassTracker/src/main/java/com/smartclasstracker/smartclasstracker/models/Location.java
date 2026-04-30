@@ -15,6 +15,11 @@ public class Location {
     @Id
     private String id;
 
+//    @ManyToOne
+//    @JoinColumn(name = "device_id")
+//    private TrackingDevice device;
+
+    private String userId;
     private double latitude;
     private double longitude;
     private LocalDateTime time;

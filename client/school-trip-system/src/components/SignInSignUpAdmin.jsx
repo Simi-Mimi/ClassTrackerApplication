@@ -8,6 +8,7 @@ export const SignInSignUpAdmin = () => {
   useEffect(() => {
     const fetchStatus = async () => {
       const hasAdmin = await checkAdminStatus();
+      console.log(hasAdmin+" hasAdmin")
       if (hasAdmin) {
         setView("signin");
       } else {

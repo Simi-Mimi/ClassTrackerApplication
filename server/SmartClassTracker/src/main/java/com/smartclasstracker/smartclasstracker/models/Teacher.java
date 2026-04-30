@@ -22,4 +22,8 @@ public class Teacher {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+//    @OneToOne
+//    @JoinColumn(name = "device_id",nullable = true)
+//    private TrackingDevice device;
 }

@@ -55,7 +55,7 @@ export const SignUpAdmin = () => {
       {message.show && <div>{message.mess}</div>}
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h2>רישום מנהל- המנהל אינו ניתן לשינוי!</h2>
+        <h2> רישום מנהל</h2>
         <div>
           {serverError && (
             <p className="error-msg" style={{ color: "red" }}>

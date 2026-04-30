@@ -1,9 +1,6 @@
 package com.smartclasstracker.smartclasstracker.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,8 +15,13 @@ public class Student {
     private String firstName;
     private String lastName;
     @ManyToOne
-    @JoinColumn(name = "classroom_id")
+    @JoinColumn(name = "classroom_id",nullable = true)
     private Classroom classroom;
+
+
+//    @OneToOne
+//    @JoinColumn(name = "device_id",nullable = true)
+//    private TrackingDevice device;
 
 }
 

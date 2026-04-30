@@ -33,10 +33,10 @@ def get_students(teacher_id):
         print(f"שגיאה: {e}")
         return []
 
-def send_location(student_id,num):
+def send_location(user_id,num):
     if num==1:
         json_location = {
-        "id": str(student_id),
+        "id": str(user_id),
         "coordinates": {
         "longitude": {
                 "degrees": 34, 
@@ -53,7 +53,7 @@ def send_location(student_id,num):
     }
     else:
         json_location = {
-        "id": str(student_id),
+        "id": str(user_id),
         "coordinates": {
         "longitude": {
                 "degrees": 34, 
@@ -69,9 +69,11 @@ def send_location(student_id,num):
         "time": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
     }
     try:
-        requests.post(POST_LOCATION_URL, json=json_location)
-    except:
-        pass
+       response = requests.post(POST_LOCATION_URL, json=json_location)
+       print(f"Status: {response.status_code}, Response: {response.text}")
+    except Exception as e:
+       print(f"Connection Error: {e}")
+
 
 
 while True:

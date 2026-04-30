@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class LocationDTO {
 
-    private Long id;
+    private String id;
     private Coordinates coordinates;
     private String time;
 

@@ -151,7 +151,5 @@ public class TripController {
     public ResponseEntity<Boolean> hasAdmin() {
         return ResponseEntity.ok(teacherRepo.count() > 0);
     }
-
-
 }
 
